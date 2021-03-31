@@ -1,0 +1,54 @@
+---
+title: "Mi_Primer_RMd"
+author: "Oliver Ojeda Moreno"
+date: "30-03-2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE)
+library(tidyverse)
+library(kableExtra)
+```
+
+#Introduccion a R Markdown
+
+Este parrafo es un ejemplo para aprender las nociones basicas de **R Markdown**.
+En el siguiente [link](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) es posible acceder a un Cheat Sheet para acceder a una *guia rapida* con los principales tips del uso de R Markdown.
+
+```{r}
+plants <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-08-18/plants.csv')
+actions <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-08-18/actions.csv')
+threats <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-08-18/threats.csv')
+
+```
+## Ejemplo inline
+### Exploracion base de datos
+Segun una base de datos publicada por la **IUCN** el numero de especies extintas en Sudamerica es de `r plants %>% dplyr::filter(continent == 'South America') %>% nrow()` 
+
+## Ejemplo grafica de tablas con knitr
+```{r}
+data("msleep")
+View(msleep)
+Tabla <- msleep %>% 
+  group_by(vore) %>% 
+  summarise_at("sleep_total",.funs = list(Mean = mean, SD = sd)) %>% 
+  dplyr::filter(!is.na(vore)) %>% 
+  arrange(desc(Mean))
+
+kable(Tabla, digits = 2) %>% kable_styling(bootstrap_options = c("striped", 
+    "hover", "condensed"), full_width = F)
+```
+
+## Ejemplo grafica de tablas largas con knitr
+
+```{r}
+msleep_long <- msleep %>% dplyr::select(name, vore, 
+    sleep_total, brainwt)
+
+kable(msleep_long, digits = 2, caption = "La base de datos entera") %>% 
+    kable_styling(bootstrap_options = c("striped", 
+        "hover", "condensed"), full_width = F) %>% 
+    scroll_box(width = "800px", height = "200px")
+```
+
